@@ -3,58 +3,94 @@
 <head>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-    <title>Tienda WhatsApp Pro</title>
+    <title>Tienda WhatsApp Pro - Diagnóstico</title>
     <script src='https://cdn.tailwindcss.com'></script>
+    <style>
+        .log-entry { font-family: monospace; font-size: 0.8em; border-bottom: 1px solid #eee; padding: 2px 0; }
+        .log-success { color: green; }
+        .log-error { color: red; }
+    </style>
 </head>
-<body class='bg-gray-100'>
+<body class='bg-gray-100 flex flex-col min-h-screen'>
     <header class='bg-green-600 text-white p-6 shadow-lg sticky top-0 z-50 text-center'>
-        <h1 class='text-2xl font-bold'>Tienda WhatsApp Pro</h1>
+        <h1 class='text-2xl font-bold uppercase'>Tienda WhatsApp Pro</h1>
         <p class='text-sm opacity-90'>Vende online sin comisiones</p>
     </header>
 
-    <main id='app' class='p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+    <main id='app' class='p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 flex-grow'>
         <div class='text-center col-span-full py-10'>
             <p class='text-gray-500 animate-pulse'>Conectando con el inventario...</p>
         </div>
     </main>
 
+    <!-- PANEL DE DIAGNÓSTICO -->
+    <div class='bg-black text-white p-4 max-h-48 overflow-y-auto w-full sticky bottom-0 border-t-4 border-green-500 shadow-2xl'>
+        <div class='flex justify-between items-center mb-2'>
+            <span class='font-bold uppercase text-xs text-green-400'>[ Panel de Estado ]</span>
+            <button onclick="location.reload()" class='bg-green-600 px-3 py-1 rounded text-xs font-bold hover:bg-green-700'>RECONECTAR</button>
+        </div>
+        <div id='log-panel'></div>
+    </div>
+
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbz1z7aM_KtUohAOMTs361pGkIptC7DvnF4HOaxzbwKOleaBo_lKVsFxfflQFYgpPUm4/exec";
-        
-        // Datos por si falla la conexión
-        const respaldo = [
-            { id: 1, nombre: 'Producto Local 1', precio: 1000, img: 'https://via.placeholder.com/300' },
-            { id: 2, nombre: 'Producto Local 2', precio: 2000, img: 'https://via.placeholder.com/300' }
-        ];
+        const logPanel = document.getElementById('log-panel');
+
+        function addLog(msg, type = '') {
+            const time = new Date().toLocaleTimeString();
+            const entry = document.createElement('div');
+            entry.className = ;
+            entry.innerHTML = ;
+            logPanel.prepend(entry);
+        }
 
         async function cargar() {
+            addLog('Iniciando conexión con Google Apps Script...');
+            
             try {
-                // Intentamos cargar de Google con un tiempo límite
+                addLog();
+                
                 const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 5000);
+                const timeoutId = setTimeout(() => controller.abort(), 10000);
                 
                 const res = await fetch(API_URL, { signal: controller.signal });
+                
+                if (res.ok) {
+                    addLog('Respuesta HTTP 200 RECIBIDA ✅', 'success');
+                } else {
+                    addLog(, 'error');
+                }
+
                 const data = await res.json();
+                addLog(, 'success');
+                
                 renderizar(data);
             } catch (e) {
-                console.warn('Usando datos de respaldo:', e);
-                renderizar(respaldo);
+                addLog(, 'error');
+                addLog('Cargando catálogo de respaldo...', 'error');
+                renderizar([
+                    { id: 1, nombre: 'PRODUCTO DE RESPALDO 1', precio: 1000, img: 'https://via.placeholder.com/300' },
+                    { id: 2, nombre: 'PRODUCTO DE RESPALDO 2', precio: 2000, img: 'https://via.placeholder.com/300' }
+                ]);
             }
         }
 
         function renderizar(items) {
+            addLog('Renderizando productos en pantalla...');
             const app = document.getElementById('app');
             app.innerHTML = '';
             items.forEach(p => {
                 const div = document.createElement('div');
-                div.className = 'bg-white rounded-xl shadow-md overflow-hidden p-4';
+                div.className = 'bg-white rounded-xl shadow-md overflow-hidden p-4 border border-gray-200';
                 div.innerHTML = ;
                 app.appendChild(div);
             });
+            addLog('CATÁLOGO LISTO PARA EL USUARIO ✅', 'success');
         }
 
         function pedir(n, p) {
-            window.open('https://wa.me/5491122334455?text=' + encodeURIComponent('Hola! Me interesa: ' + n));
+            addLog();
+            window.open('https://wa.me/5491122334455?text=' + encodeURIComponent('¡Hola! Me interesa: ' + n));
         }
 
         cargar();
