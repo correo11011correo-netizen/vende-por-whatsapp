@@ -5,47 +5,47 @@
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
     <title>Catálogo Pro - WhatsApp</title>
     <script src='https://cdn.tailwindcss.com'></script>
-    <style>
-        .product-card { transition: transform 0.2s; }
-        .product-card:hover { transform: scale(1.02); }
-    </style>
 </head>
 <body class='bg-gray-100'>
-    <header class='bg-green-600 text-white p-4 shadow-lg sticky top-0 z-50'>
-        <h1 class='text-2xl font-bold text-center'>Mi Tienda Pro</h1>
-        <p class='text-center text-sm'>Haz tu pedido y recíbelo por WhatsApp</p>
+    <header class='bg-green-600 text-white p-6 shadow-lg sticky top-0 z-50'>
+        <h1 class='text-2xl font-bold text-center'>Tienda WhatsApp Pro</h1>
+        <p class='text-center text-sm'>Vende online sin pagar comisiones</p>
     </header>
 
     <main id='app' class='p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
-        <!-- Los productos se cargarán aquí -->
         <div class='text-center col-span-full py-10'>
-            <p class='text-gray-500 animate-pulse'>Cargando catálogo...</p>
+            <p class='text-gray-500 animate-pulse'>Sincronizando con Google Apps Script...</p>
         </div>
     </main>
 
     <script>
-        // Simulamos datos por ahora (luego conectaremos con GAS)
-        const productos = [
-            { id: 1, nombre: 'Producto Premium', precio: 2500, img: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300' },
-            { id: 2, nombre: 'Servicio Express', precio: 1200, img: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300' },
-            { id: 3, nombre: 'Pack Ahorro', precio: 5000, img: 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=300' }
-        ];
+        const API_URL = "https://script.google.com/macros/s/AKfycbz1z7aM_KtUohAOMTs361pGkIptC7DvnF4HOaxzbwKOleaBo_lKVsFxfflQFYgpPUm4/exec";
 
-        const app = document.getElementById('app');
-        app.innerHTML = '';
-
-        productos.forEach(p => {
-            const card = document.createElement('div');
-            card.className = 'bg-white rounded-xl shadow-md overflow-hidden product-card';
-            card.innerHTML = ;
-            app.appendChild(card);
-        });
-
-        function pedir(nombre, precio) {
-            const telefono = '1234567890'; // Aquí irá el teléfono del cliente
-            const mensaje = encodeURIComponent("¡Hola! Me interesa el producto: " + nombre + " ($ " + precio + ")");
-            window.open("https://wa.me/" + telefono + "?text=" + mensaje);
+        async function cargar() {
+            try {
+                const res = await fetch(API_URL);
+                const data = await res.json();
+                const app = document.getElementById('app');
+                app.innerHTML = '';
+                data.forEach(p => {
+                    const card = document.createElement('div');
+                    card.className = 'bg-white rounded-xl shadow-md overflow-hidden';
+                    card.innerHTML = ;
+                    app.appendChild(card);
+                });
+            } catch (e) {
+                console.error(e);
+                document.getElementById('app').innerHTML = '<p class="text-center col-span-full">Error al cargar datos.</p>';
+            }
         }
+
+        function pedir(n, p) {
+            const num = '5491122334455';
+            const msg = encodeURIComponent("Hola! Quiero comprar: " + n + " por $" + p);
+            window.open("https://wa.me/" + num + "?text=" + msg);
+        }
+
+        cargar();
     </script>
 </body>
 </html>
