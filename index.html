@@ -1,90 +1,85 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang='es'>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tienda WhatsApp Pro - Diagnóstico Pro</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        #log-panel { font-family: 'Courier New', Courier, monospace; font-size: 11px; line-height: 1.4; }
-        .log-entry { border-left: 3px solid #444; padding-left: 8px; margin-bottom: 2px; }
-        .log-info { border-color: #3b82f6; color: #93c5fd; }
-        .log-success { border-color: #22c55e; color: #86efac; }
-        .log-error { border-color: #ef4444; color: #fca5a5; }
-        .log-warn { border-color: #eab308; color: #fde047; }
-    </style>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>Tienda WhatsApp Pro - Admin</title>
+    <script src='https://cdn.tailwindcss.com'></script>
 </head>
-<body class="bg-slate-900 text-white min-h-screen flex flex-col">
+<body class='bg-slate-900 text-white min-h-screen flex flex-col'>
     
-    <header class="bg-green-600 p-4 shadow-xl text-center">
-        <h1 class="text-xl font-bold tracking-widest">SISTEMA DE VENTAS WHATSAPP</h1>
-        <div class="inline-block px-3 py-1 bg-green-800 rounded-full text-xs mt-1 animate-pulse">ESTADO: CONECTANDO...</div>
+    <header class='bg-green-600 p-4 shadow-xl text-center sticky top-0 z-50'>
+        <h1 class='text-xl font-bold tracking-widest'>MI TIENDA WHATSAPP PRO</h1>
+        <div id='header-status' class='inline-block px-3 py-1 bg-green-800 rounded-full text-[10px] mt-1'>ONLINE</div>
     </header>
 
-    <main id="app" class="flex-grow p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 overflow-y-auto">
+    <main id='app' class='flex-grow p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 overflow-y-auto pb-32'>
         <!-- Los productos aparecerán aquí -->
     </main>
 
-    <!-- PANEL DE LOGS REAL-TIME -->
-    <footer class="bg-black border-t-2 border-green-500 h-64 flex flex-col shadow-2xl">
-        <div class="bg-zinc-800 px-4 py-2 flex justify-between items-center">
-            <span class="text-xs font-black text-green-500 tracking-tighter">TERMINAL DE DIAGNÓSTICO v2.0</span>
-            <button onclick="location.reload()" class="text-[10px] bg-green-600 hover:bg-green-500 px-2 py-1 rounded font-bold transition-all">REINICIAR TEST</button>
+    <!-- PANEL DE ADMINISTRACIÓN (Formulario) -->
+    <div id='admin-panel' class='fixed bottom-0 right-0 m-6 w-full max-w-sm bg-zinc-800 p-6 rounded-2xl border-t-4 border-green-500 shadow-2xl transition-transform translate-y-full' style='z-index: 1000;'>
+        <h2 class='text-lg font-bold text-green-400 mb-4 uppercase tracking-tighter'>Cargar Nuevo Producto</h2>
+        <div class='space-y-3'>
+            <input id='nombre' class='w-full bg-zinc-900 p-3 rounded border border-zinc-700 text-sm' placeholder='Nombre del producto'>
+            <input id='precio' type='number' class='w-full bg-zinc-900 p-3 rounded border border-zinc-700 text-sm' placeholder='Precio ($)'>
+            <input id='img' class='w-full bg-zinc-900 p-3 rounded border border-zinc-700 text-sm' placeholder='URL de la imagen'>
+            <button onclick="cargarNuevo()" class='w-full bg-green-600 py-3 rounded font-bold uppercase hover:bg-green-500'>Cargar Producto</button>
+            <button onclick="toggleAdmin()" class='w-full text-xs text-zinc-500 hover:underline'>Cerrar</button>
         </div>
-        <div id="log-panel" class="flex-grow overflow-y-auto p-4 bg-zinc-950">
-            <!-- Los logs aparecerán aquí en tiempo real -->
-        </div>
+    </div>
+
+    <!-- BOTÓN FLOTANTE (+) -->
+    <button onclick="toggleAdmin()" class='fixed bottom-28 right-6 bg-green-500 w-14 h-14 rounded-full flex items-center justify-center text-3xl font-bold shadow-2xl hover:scale-110 transition-transform z-50'>+</button>
+
+    <footer class='bg-black h-24 border-t border-zinc-800 p-4 overflow-y-auto text-[9px] font-mono opacity-50 sticky bottom-0'>
+        <div id='log-panel'>--- Terminal de Estado ---</div>
     </footer>
 
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbwSq0LTwdUdQEZ7_JCyr3pQoryT4Rt3Bo6qxCUNf8MXpWus7mLbMfWgbu8eRghRoXTh/exec";
-        const logPanel = document.getElementById('log-panel');
-
-        function addLog(message, type = 'info') {
-            const entry = document.createElement('div');
-            entry.className = `log-entry log-${type}`;
+        
+        function addLog(m) {
             const time = new Date().toLocaleTimeString();
-            entry.innerHTML = `<span class="opacity-50">[${time}]</span> <span class="font-bold">${message}</span>`;
-            logPanel.appendChild(entry);
-            logPanel.scrollTop = logPanel.scrollHeight;
+            document.getElementById('log-panel').prepend(document.createElement('div').innerHTML = );
+        }
+
+        function toggleAdmin() {
+            const panel = document.getElementById('admin-panel');
+            panel.classList.toggle('translate-y-full');
         }
 
         async function init() {
-            addLog("Iniciando secuencia de arranque del sistema...");
-            addLog("Paso 1: Verificando conexión a Internet...", "info");
-            
-            if (!navigator.onLine) {
-                addLog("ERROR: No tienes conexión a Internet.", "error");
-                return;
-            }
-
-            addLog("Paso 2: Conectando con Google Apps Script (GAS)...", "info");
-            addLog(`URL: ${API_URL.substring(0, 40)}...`, "warn");
-
+            addLog('Iniciando carga...');
             try {
-                const start = Date.now();
-                const response = await fetch(API_URL);
-                const duration = Date.now() - start;
+                const res = await fetch(API_URL);
+                const data = await res.json();
+                render(data);
+                addLog('Catálogo cargado ✅');
+            } catch (e) {
+                addLog('Error al cargar del servidor. Usando respaldo.');
+                render([{nombre: 'Ejemplo 1', precio: 1000}]);
+            }
+        }
 
-                addLog(`Paso 3: Respuesta recibida en ${duration}ms`, "success");
+        async function cargarNuevo() {
+            const payload = {
+                nombre: document.getElementById('nombre').value,
+                precio: document.getElementById('precio').value,
+                img: document.getElementById('img').value || 'https://via.placeholder.com/300'
+            };
 
-                if (!response.ok) {
-                    throw new Error(`HTTP Status: ${response.status}`);
-                }
-
-                addLog("Paso 4: Procesando datos del catálogo...", "info");
-                const productos = await response.json();
-                
-                addLog(`ÉXITO: Se han cargado ${productos.length} productos correctamente ✅`, "success");
-                render(productos);
-
-            } catch (err) {
-                addLog(`ERROR CRÍTICO: ${err.message}`, "error");
-                addLog("Cargando modo offline (productos locales)...", "warn");
-                render([
-                    { nombre: "Modo Offline - Item 1", precio: 0 },
-                    { nombre: "Modo Offline - Item 2", precio: 0 }
-                ]);
+            addLog();
+            try {
+                const res = await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+                addLog('Producto guardado en Google ✅');
+                toggleAdmin();
+                init(); // Recargar catálogo
+            } catch (e) {
+                addLog('Error al guardar. Verifica permisos.');
             }
         }
 
@@ -93,21 +88,12 @@
             app.innerHTML = '';
             data.forEach(p => {
                 const card = document.createElement('div');
-                card.className = "bg-zinc-800 rounded-lg p-4 border border-zinc-700 hover:border-green-500 transition-all shadow-lg";
-                card.innerHTML = `
-                    <div class="h-32 bg-zinc-700 rounded mb-3 flex items-center justify-center">
-                         <span class="text-zinc-500 text-xs">Imagen: ${p.nombre}</span>
-                    </div>
-                    <h2 class="font-bold text-green-400">${p.nombre}</h2>
-                    <p class="text-2xl font-black mt-1">$${p.precio}</p>
-                    <button class="w-full mt-4 bg-green-600 py-2 rounded font-bold text-sm hover:bg-green-500 uppercase tracking-widest">Comprar</button>
-                `;
+                card.className = "bg-zinc-800 rounded-xl p-4 border border-zinc-700 shadow-lg";
+                card.innerHTML = ;
                 app.appendChild(card);
             });
-            addLog("Interfaz de usuario renderizada con éxito.", "success");
         }
 
-        // Ejecutar al cargar la página
         window.onload = init;
     </script>
 </body>
